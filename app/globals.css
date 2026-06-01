@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+:root {
+  --bg-base: #050813;
+  --bg-elevated: #0a1024;
+  --bg-card: #111a36;
+  --bg-card-hover: #1a2547;
+  --border: rgba(148, 163, 184, 0.12);
+  --border-strong: rgba(148, 163, 184, 0.22);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-live: #ef4444;
+  --accent-counting: #f59e0b;
+  --accent-won: #10b981;
+  --accent-lead: #38bdf8;
+  --grid-line: rgba(56, 189, 248, 0.08);
+}
+
+@theme inline {
+  --color-bg-base: var(--bg-base);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-card: var(--bg-card);
+  --color-bg-card-hover: var(--bg-card-hover);
+  --color-border-base: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-live: var(--accent-live);
+  --color-counting: var(--accent-counting);
+  --color-won: var(--accent-won);
+  --color-lead: var(--accent-lead);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-display: ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at top left, rgba(56, 189, 248, 0.08), transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(239, 68, 68, 0.05), transparent 50%),
+    var(--bg-base);
+  min-height: 100vh;
+}
+
+/* tabular numerals for vote counts */
+.tabular { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+
+/* glowing pulse ring for live indicator */
+@keyframes pulse-ring {
+  0%   { transform: scale(0.95); opacity: 0.7; }
+  70%  { transform: scale(1.4); opacity: 0; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+.pulse-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: pulse-ring 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* row flash on update */
+@keyframes flash-update {
+  0%   { background-color: rgba(56, 189, 248, 0.18); }
+  100% { background-color: transparent; }
+}
+.flash { animation: flash-update 1.4s ease-out; }
+
+/* number tick animation */
+@keyframes count-up-pop {
+  0%   { transform: translateY(4px); opacity: 0.4; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.tick { animation: count-up-pop 320ms cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* shimmer for loading */
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, rgba(148, 163, 184, 0.05) 0%, rgba(148, 163, 184, 0.15) 50%, rgba(148, 163, 184, 0.05) 100%);
+  background-size: 200px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+/* gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #f472b6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* card */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  transition: background-color 200ms, border-color 200ms;
+}
+.card:hover { background: var(--bg-card-hover); border-color: var(--border-strong); }
+
+/* subtle grid background for hero sections */
+.grid-bg {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: var(--bg-card-hover); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+
+/* broadcast mode: hide chrome */
+body.broadcast {
+  background: transparent;
+}
+body.broadcast .hide-on-broadcast { display: none !important; }
+
+/* focus rings */
+:focus-visible {
+  outline: 2px solid var(--accent-lead);
+  outline-offset: 2px;
+}

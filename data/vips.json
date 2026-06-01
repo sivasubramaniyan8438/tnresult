@@ -1,0 +1,50 @@
+[
+  {
+    "name": "M. K. Stalin",
+    "role": "Chief Minister · DMK President",
+    "constituencyId": 13,
+    "expectedParty": "DMK",
+    "initials": "MKS",
+    "_verified": "MyNeta TN 2026 — exact match in Kolathur"
+  },
+  {
+    "name": "Edappadi K. Palaniswami",
+    "role": "AIADMK General Secretary · Former CM",
+    "constituencyId": 86,
+    "expectedParty": "AIADMK",
+    "initials": "EPS",
+    "_verified": "MyNeta TN 2026 — exact match in Edappadi"
+  },
+  {
+    "name": "Udhayanidhi Stalin",
+    "role": "Deputy CM · DMK Youth Wing",
+    "constituencyId": 19,
+    "expectedParty": "DMK",
+    "initials": "US",
+    "_verified": "MyNeta TN 2026 — exact match in Chepauk-Thiruvallikeni"
+  },
+  {
+    "name": "C. Joseph Vijay",
+    "role": "TVK President · Actor-politician",
+    "constituencyId": 12,
+    "expectedParty": "TVK",
+    "initials": "JV",
+    "_verified": "MyNeta TN 2026 — TVK candidate filed in Perambur (was wrongly mapped to AC#124 Valparai which is SC-reserved)"
+  },
+  {
+    "name": "Senthamizhan Seeman",
+    "role": "NTK Coordinator",
+    "constituencyId": 184,
+    "expectedParty": "NTK",
+    "initials": "SS",
+    "_verified": "MyNeta TN 2026 — NTK candidate 'Seeman' in Karaikudi (was wrongly mapped to AC#30 Pallavaram)"
+  },
+  {
+    "name": "K. Selvaperunthagai",
+    "role": "TNCC President · Congress",
+    "constituencyId": 29,
+    "expectedParty": "INC",
+    "initials": "KS",
+    "_verified": "MyNeta TN 2026 — INC candidate in Sriperumbudur (was wrongly mapped to AC#67 Arani)"
+  }
+]

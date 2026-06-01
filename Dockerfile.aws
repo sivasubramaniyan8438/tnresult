@@ -1,0 +1,77 @@
+# syntax=docker/dockerfile:1.7
+#
+# tn-election-results — production container for the AWS deploy
+# (App Runner / ECS Fargate). NOT used by Railway — Railway is on
+# Nixpacks (railway.json + nixpacks.toml). Renamed from `Dockerfile`
+# to `Dockerfile.aws` 2026-05-03 because Railway was auto-detecting
+# the Dockerfile and overriding the Nixpacks build, breaking volume
+# write permissions (container ran as UID 1001, Railway volume
+# is root-owned → SQLITE_READONLY on every write).
+#
+# Build:   docker build -t tn-election-results:latest -f Dockerfile.aws .
+# Run:     docker run --rm -p 3000:3000 -v tn_data:/data \
+#            -e DB_PATH=/data/tn.db \
+#            -e SESSION_SECRET=change-me \
+#            -e AUTH_NAADHAS_PASSWORD=change-me \
+#            -e AUTH_AADHAN_PASSWORD=change-me \
+#            tn-election-results:latest
+#
+# Volume:  /data must be a persistent volume in production (EFS on AWS,
+#          mounted disk on Lightsail/EC2). chown the mount to UID 1001
+#          before first start — see docs/DEPLOY-AWS.md §4.2 EFS access
+#          point setup.
+
+# ── Stage 1: build ─────────────────────────────────────────────────────
+FROM node:22-bookworm-slim AS builder
+WORKDIR /app
+
+# better-sqlite3 needs build tools to compile its native binding the
+# first time. Install them in the builder stage only — they don't ship
+# in the runtime image.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 make g++ ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+
+# Cached dep install
+COPY package.json package-lock.json ./
+RUN npm ci --include=dev
+
+# App source + build
+COPY . .
+RUN npm run build
+
+# Prune dev deps for the runtime image
+RUN npm prune --omit=dev
+
+# ── Stage 2: runtime ───────────────────────────────────────────────────
+FROM node:22-bookworm-slim AS runtime
+WORKDIR /app
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV DB_PATH=/data/tn.db
+
+# Non-root user for the runtime — matches the UID/GID the EFS mount
+# point should be chowned to in AWS.
+RUN groupadd -r app && useradd -r -g app -u 1001 app \
+  && mkdir -p /data \
+  && chown -R app:app /data /app
+
+COPY --from=builder --chown=app:app /app/.next ./.next
+COPY --from=builder --chown=app:app /app/public ./public
+COPY --from=builder --chown=app:app /app/node_modules ./node_modules
+COPY --from=builder --chown=app:app /app/package.json ./package.json
+COPY --from=builder --chown=app:app /app/scripts ./scripts
+COPY --from=builder --chown=app:app /app/data ./data
+COPY --from=builder --chown=app:app /app/lib ./lib
+COPY --from=builder --chown=app:app /app/tsconfig.json ./tsconfig.json
+
+USER app
+
+EXPOSE 3000
+
+# Healthcheck hits the same endpoint Railway uses — returns 200 once
+# the SQLite DB is open and the API surface is up.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:'+process.env.PORT+'/api/results').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+
+CMD ["npm", "run", "start"]

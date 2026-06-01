@@ -1,0 +1,3 @@
+# Pin Node version. Let Nixpacks auto-detect npm ci + npm run build phases.
+[phases.setup]
+nixPkgs = ["nodejs_22"]

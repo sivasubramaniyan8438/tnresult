@@ -1,0 +1,82 @@
+{
+  "family": "tn-dashboard",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::REPLACE_ACCOUNT_ID:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::REPLACE_ACCOUNT_ID:role/ecsTaskRole",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "containerDefinitions": [
+    {
+      "name": "dashboard",
+      "image": "REPLACE_ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com/tn-election-results:latest",
+      "essential": true,
+      "portMappings": [
+        { "containerPort": 3000, "protocol": "tcp" }
+      ],
+      "environment": [
+        { "name": "NODE_ENV", "value": "production" },
+        { "name": "PORT", "value": "3000" },
+        { "name": "DB_PATH", "value": "/data/tn.db" }
+      ],
+      "secrets": [
+        {
+          "name": "SESSION_SECRET",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:REPLACE_ACCOUNT_ID:secret:tn-dashboard/SESSION_SECRET-XXXXXX"
+        },
+        {
+          "name": "AUTH_NAADHAS_PASSWORD",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:REPLACE_ACCOUNT_ID:secret:tn-dashboard/AUTH_NAADHAS_PASSWORD-XXXXXX"
+        },
+        {
+          "name": "AUTH_AADHAN_PASSWORD",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:REPLACE_ACCOUNT_ID:secret:tn-dashboard/AUTH_AADHAN_PASSWORD-XXXXXX"
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "tn-data",
+          "containerPath": "/data",
+          "readOnly": false
+        }
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "node -e \"fetch('http://127.0.0.1:3000/api/results').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 30
+      },
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/tn-dashboard",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "dashboard",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ],
+  "volumes": [
+    {
+      "name": "tn-data",
+      "efsVolumeConfiguration": {
+        "fileSystemId": "REPLACE_FS_ID",
+        "rootDirectory": "/",
+        "transitEncryption": "ENABLED",
+        "authorizationConfig": {
+          "accessPointId": "REPLACE_ACCESS_POINT_ID",
+          "iam": "ENABLED"
+        }
+      }
+    }
+  ]
+}

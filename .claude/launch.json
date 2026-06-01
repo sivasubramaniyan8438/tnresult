@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "tn-dashboard",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3300,
+      "cwd": "/Users/admin/eci/tn-election-results",
+      "env": {
+        "PORT": "3300"
+      }
+    }
+  ]
+}

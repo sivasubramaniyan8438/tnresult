@@ -1,0 +1,50 @@
+[
+  {
+    "constituencyId": 11,
+    "label": "Dr. Radhakrishnan Nagar",
+    "track": "Picked the winning side in 6 of last 7 elections",
+    "since": 1991
+  },
+  {
+    "constituencyId": 25,
+    "label": "Mylapore",
+    "track": "Predicted overall TN winner every election since 2001",
+    "since": 2001
+  },
+  {
+    "constituencyId": 86,
+    "label": "Edappadi",
+    "track": "EPS stronghold — home turf indicator for AIADMK",
+    "since": 2011
+  },
+  {
+    "constituencyId": 13,
+    "label": "Kolathur",
+    "track": "Stalin's seat — DMK organizational health barometer",
+    "since": 2011
+  },
+  {
+    "constituencyId": 193,
+    "label": "Madurai Central",
+    "track": "Madurai bellwether — sided with state winner 5 of last 6",
+    "since": 1996
+  },
+  {
+    "constituencyId": 123,
+    "label": "Pollachi",
+    "track": "Western TN swing seat — flipped between Dravidian majors",
+    "since": 1996
+  },
+  {
+    "constituencyId": 214,
+    "label": "Thoothukkudi",
+    "track": "Coastal indicator — followed winning side 6 of 7 times",
+    "since": 1991
+  },
+  {
+    "constituencyId": 140,
+    "label": "Tiruchirappalli (West)",
+    "track": "Central TN bellwether — record 7 of 8 since 1989",
+    "since": 1989
+  }
+]
